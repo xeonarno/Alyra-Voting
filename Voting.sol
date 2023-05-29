@@ -221,7 +221,7 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(status, session.status);
     }
 
-    function vote(uint256 proposalId) external onlyVoters {
+    function vote(uint256 proposalId) external onlyVoters voteSessionActive {
         if (proposalId >= session.proposals.length && proposalId == 0) {
             revert WrongProposal(proposalId);
         }
@@ -243,6 +243,7 @@ contract Voting is Ownable {
     function tallyVotes() external voteSessionDone {
         uint256 maxVoteCount = 0;
         uint256 mainProposal = 0;
+        // Just to 1 to avoid void bulletin.
         for (uint256 i = 1; i < session.proposals.length; i++) {
             if (session.proposals[i].voteCount > maxVoteCount) {
                 maxVoteCount = session.proposals[i].voteCount;
@@ -288,10 +289,9 @@ contract Voting is Ownable {
         onlyVoters
         returns (Proposal[] memory)
     {
-        require(
-            session.status != WorkflowStatus.RegisteringVoters,
-            unicode"Please wait voters' registration to be closed"
-        );
+        if(session.status == WorkflowStatus.RegisteringVoters) {
+            revert VotersNotYetRegistered();
+        }
 
         return session.proposals;
     }
@@ -325,12 +325,15 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(status, session.status);
     }
 
-    function resetProposals() external onlyOwner {
+    function resetProposals() external onlyOwner {   
         WorkflowStatus status = session.status;
-        session.status = WorkflowStatus.VotingSessionStarted;
 
         _resetProposals();
 
+        // we must exclude 0 from the vote;
+        session.proposals[0] = Proposal("void bulletin", 0);
+        
+        session.status = WorkflowStatus.ProposalsRegistrationStarted;
         emit WorkflowStatusChange(status, session.status);
     }
 

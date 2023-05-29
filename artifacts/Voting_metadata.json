@@ -435,11 +435,11 @@
 			]
 		},
 		"Voting.sol": {
-			"keccak256": "0xf08c7b53c4d31f47396435386e16e5b9928422bc6480319aa4f267804badf43a",
+			"keccak256": "0x2f9f210c7c3bb5c98d611170bf2950601f262c1cacc0b27d34f4c3d05a2dee27",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://eab4893cddd3977444089762c18c686e61c81a3e811fa4a477fbf0c644648c02",
-				"dweb:/ipfs/QmQ1sP8x14eKf9mNqgvdxRcwkB1WdRwG3eyhxURjoTqiAs"
+				"bzz-raw://e7a6e86c8d6962191e1c61e2de04804d1bb357d660da6fb06dbdcb81e2722b8e",
+				"dweb:/ipfs/QmcUx79NRi8G1h9TG6PUaYsaPPRurHmzz1F4CCc62i7jza"
 			]
 		}
 	},
