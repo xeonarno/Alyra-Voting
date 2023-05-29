@@ -19,6 +19,8 @@ error UnRegisteredVoter(address invalidVoter);
 error WrongPhaseStatus(WorkflowStatus requiredStatus, WorkflowStatus status);
 error AlreadyVoted(address invalidVote);
 error WrongProposal(uint256 invalidProposal);
+error MissingVoteOfVoter(address invalidVoter);
+error VotersNotYetRegistered();
 
 contract Voting is Ownable {
     // Events
@@ -290,11 +292,24 @@ contract Voting is Ownable {
             session.status != WorkflowStatus.RegisteringVoters,
             unicode"Please wait voters' registration to be closed"
         );
+
         return session.proposals;
     }
 
-    function getVoteOfVoter(address _voters) external view returns (uint256) {
-        return session.voters[_voters].votedProposalId;
+    function getVoteOfVoter(address _voter) external view onlyVoters returns (uint256) {
+        if(session.status == WorkflowStatus.RegisteringVoters) {
+            revert VotersNotYetRegistered();
+        }
+
+        if (!session.voters[_voter].isRegistered) {
+            revert UnRegisteredVoter(_voter);
+        }
+
+        if(session.voters[_voter].votedProposalId == 0) {
+            revert MissingVoteOfVoter(_voter);
+        }
+        
+        return session.voters[_voter].votedProposalId;
     }
 
     /*

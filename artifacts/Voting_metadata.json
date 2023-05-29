@@ -40,7 +40,23 @@
 						"type": "address"
 					}
 				],
+				"name": "MissingVoteOfVoter",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "invalidVoter",
+						"type": "address"
+					}
+				],
 				"name": "UnRegisteredVoter",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "VotersNotYetRegistered",
 				"type": "error"
 			},
 			{
@@ -209,7 +225,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_voters",
+						"name": "_voter",
 						"type": "address"
 					}
 				],
@@ -419,11 +435,11 @@
 			]
 		},
 		"Voting.sol": {
-			"keccak256": "0x538eccce8c982d4c964b2de28ef386fb2c97f857992d996efc334be82b6725df",
+			"keccak256": "0xf08c7b53c4d31f47396435386e16e5b9928422bc6480319aa4f267804badf43a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c4234187bde966c2f08527319175a6f56500320ba9154733780db9c966fec040",
-				"dweb:/ipfs/QmQNquGjmWD6c7RWod7JVXRKMih3buBcchKdexEoFCPYHV"
+				"bzz-raw://eab4893cddd3977444089762c18c686e61c81a3e811fa4a477fbf0c644648c02",
+				"dweb:/ipfs/QmQ1sP8x14eKf9mNqgvdxRcwkB1WdRwG3eyhxURjoTqiAs"
 			]
 		}
 	},
