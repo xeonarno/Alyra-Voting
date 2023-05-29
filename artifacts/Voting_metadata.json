@@ -11,6 +11,66 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "invalidVoter",
+						"type": "address"
+					}
+				],
+				"name": "AlreadyRegisterVoter",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "invalidVote",
+						"type": "address"
+					}
+				],
+				"name": "AlreadyVoted",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "invalidVoter",
+						"type": "address"
+					}
+				],
+				"name": "UnRegisteredVoter",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "enum WorkflowStatus",
+						"name": "requiredStatus",
+						"type": "uint8"
+					},
+					{
+						"internalType": "enum WorkflowStatus",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"name": "WrongPhaseStatus",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "invalidProposal",
+						"type": "uint256"
+					}
+				],
+				"name": "WrongProposal",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -95,6 +155,20 @@
 			},
 			{
 				"inputs": [],
+				"name": "endProposalRegistration",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "endVoteSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getVoteDetails",
 				"outputs": [
 					{
@@ -145,8 +219,96 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					}
+				],
+				"name": "registerProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_voter",
+						"type": "address"
+					}
+				],
+				"name": "registerVoter",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "_voters",
+						"type": "address[]"
+					}
+				],
+				"name": "registerVoters",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "resetProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "resetSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "resetVote",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "resetVoters",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startProposalRegistration",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startVoteSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "tallyVotes",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -160,6 +322,19 @@
 					}
 				],
 				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "proposalId",
+						"type": "uint256"
+					}
+				],
+				"name": "vote",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -219,11 +394,11 @@
 			]
 		},
 		"Voting.sol": {
-			"keccak256": "0x376c99924c214cf0e549a4235216af79e8e0e1c538100ffc33ebef8534f6b0ff",
+			"keccak256": "0x1a2da50e5cdfeee0badc35c49cd0fcc5dc29071eaf67e71d24e2b52cc473c506",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0996dd920438aae61507efd3a88314eb86ab2ccd606c6c5003b6349305b4c62e",
-				"dweb:/ipfs/Qmb8vz3L1sC2ZcuE1sMMW4fVVmAg2djzGV9Jd36S44MQdb"
+				"bzz-raw://8a0f5d4d14ec333d07d710df4446180d607b6a8fbc8e2d62fc6819109147d2e3",
+				"dweb:/ipfs/QmaoeNY6FrAm4SWb8n31mSPe9aXzLBiJTWyYZhzfKUxgdV"
 			]
 		}
 	},
