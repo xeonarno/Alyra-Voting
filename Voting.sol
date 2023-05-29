@@ -13,11 +13,12 @@ enum WorkflowStatus {
     VotesTallied
 }
 
+// Errors
 error AlreadyRegisterVoter(address invalidVoter);
 error UnRegisteredVoter(address invalidVoter);
 error WrongPhaseStatus(WorkflowStatus requiredStatus, WorkflowStatus status);
 error AlreadyVoted(address invalidVote);
-error WrongProposal(uint invalidProposal);
+error WrongProposal(uint256 invalidProposal);
 
 contract Voting is Ownable {
     // Events
@@ -49,16 +50,38 @@ contract Voting is Ownable {
         uint256 winningProposalId; // Le gagnant
     }
 
+    // Test
+    // mapping(uint => mapping(address => Voter) sessions;
+
     Session session;
 
     constructor() {
-        _resetVoting();
+        session.status = WorkflowStatus.RegisteringVoters;
     }
 
-    function _resetVoting() private onlyOwner {
-        session.status = WorkflowStatus.RegisteringVoters;
-        resetProposal();
-   
+    function _resetProposals() internal onlyOwner {
+        delete session.proposals;
+        for (uint256 i = 0; i < session.idxVoters.length; i++) {
+            session.voters[session.idxVoters[i]].hasVoted = false;
+            session.voters[session.idxVoters[i]].votedProposalId = 0;
+        }
+    }
+
+    function _resetVoters() internal onlyOwner {
+        delete session.proposals;
+        for (uint256 i = 0; i < session.idxVoters.length; i++) {
+            session.voters[session.idxVoters[i]] = Voter(false, false, 0);
+        }
+    }
+
+    function _resetVotes() internal onlyOwner {
+        for (uint256 i = 0; i < session.idxVoters.length; i++) {
+            session.voters[session.idxVoters[i]].hasVoted = false;
+            session.voters[session.idxVoters[i]].votedProposalId = 0;
+        }
+        for (uint256 j = 0; j < session.proposals.length; j++) {
+            session.proposals[j].voteCount = 0;
+        }
     }
 
     /*
@@ -85,25 +108,30 @@ contract Voting is Ownable {
         _;
     }
     modifier registerProposalActive() {
-         _wrongPhase(WorkflowStatus.ProposalsRegistrationStarted);
+        _wrongPhase(WorkflowStatus.ProposalsRegistrationStarted);
         _;
     }
 
     modifier registerProposalDone() {
-         _wrongPhase(WorkflowStatus.ProposalsRegistrationEnded);
+        _wrongPhase(WorkflowStatus.ProposalsRegistrationEnded);
         _;
     }
 
     modifier voteSessionActive() {
-         _wrongPhase(WorkflowStatus.VotingSessionStarted);
+        _wrongPhase(WorkflowStatus.VotingSessionStarted);
         _;
     }
 
     modifier voteSessionDone() {
-         _wrongPhase(WorkflowStatus.VotingSessionStarted);
+        _wrongPhase(WorkflowStatus.VotingSessionStarted);
         _;
     }
- //TODO VotesTallied
+
+    modifier votesTallied() {
+        _wrongPhase(WorkflowStatus.VotesTallied);
+        _;
+    }
+
     /*
 
         VOTERS
@@ -120,7 +148,7 @@ contract Voting is Ownable {
         }
 
         session.idxVoters.push(_voter);
-        session.voters[_voter].isRegistered = true;
+        session.voters[_voter] = Voter(true, false, 0);
         emit VoterRegistered(_voter);
     }
 
@@ -139,21 +167,37 @@ contract Voting is Ownable {
     REGISTRATION
 
     */
-    function startProposalRegistration() external onlyOwner registerVoterActive {
+    function startProposalRegistration()
+        external
+        onlyOwner
+        registerVoterActive
+    {
         WorkflowStatus status = session.status;
         session.status = WorkflowStatus.ProposalsRegistrationStarted;
+
+        // we must exclude 0 from the vote;
+        session.proposals[0] = Proposal("void bulletin", 0);
+
         emit WorkflowStatusChange(status, session.status);
     }
 
-    function endProposalRegistration() external onlyOwner registerProposalActive {
+    function endProposalRegistration()
+        external
+        onlyOwner
+        registerProposalActive
+    {
         WorkflowStatus status = session.status;
         session.status = WorkflowStatus.ProposalsRegistrationEnded;
         emit WorkflowStatusChange(status, session.status);
     }
 
-    function registerProposal(string memory description) external onlyVoters registerProposalActive { 
+    function registerProposal(string memory description)
+        external
+        onlyVoters
+        registerProposalActive
+    {
         // Todo: unique proposals
-        uint proposalId = session.proposals.length;
+        uint256 proposalId = session.proposals.length;
         session.proposals.push(Proposal(description, 0));
         emit ProposalRegistered(proposalId);
     }
@@ -163,7 +207,7 @@ contract Voting is Ownable {
     VOTE
 
     */
-  function startVoteSession() external onlyOwner registerProposalDone {
+    function startVoteSession() external onlyOwner registerProposalDone {
         WorkflowStatus status = session.status;
         session.status = WorkflowStatus.VotingSessionStarted;
         emit WorkflowStatusChange(status, session.status);
@@ -175,11 +219,11 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(status, session.status);
     }
 
-    function vote(uint proposalId) external onlyVoters {
-        if(proposalId >= session.proposals.length) {
+    function vote(uint256 proposalId) external onlyVoters {
+        if (proposalId >= session.proposals.length && proposalId == 0) {
             revert WrongProposal(proposalId);
         }
-        if(session.voters[msg.sender].hasVoted) {
+        if (session.voters[msg.sender].hasVoted) {
             revert AlreadyVoted(msg.sender);
         }
         session.voters[msg.sender].hasVoted = true;
@@ -194,41 +238,93 @@ contract Voting is Ownable {
 
     */
 
-    function tallyVotes () external voteSessionDone {
-         WorkflowStatus status = session.status;
+    function tallyVotes() external voteSessionDone {
+        uint256 maxVoteCount = 0;
+        uint256 mainProposal = 0;
+        for (uint256 i = 1; i < session.proposals.length; i++) {
+            if (session.proposals[i].voteCount > maxVoteCount) {
+                maxVoteCount = session.proposals[i].voteCount;
+                mainProposal = i;
+            }
+        }
+
+        session.winningProposalId = mainProposal;
+
+        WorkflowStatus status = session.status;
         session.status = WorkflowStatus.VotesTallied;
+
         emit WorkflowStatusChange(status, session.status);
     }
 
-    function getWinner() external view returns (address) {
-        return address(this); // TBD
+    function getWinner()
+        external
+        view
+        onlyVoters
+        votesTallied
+        returns (uint256)
+    {
+        return session.winningProposalId;
     }
 
-    function getVoteDetails() external view returns (Proposal[] memory) {
+    /*
+    
+    VOTE DETAILS 
+    
+    */
+    function getAllVoters()
+        external
+        view
+        onlyVoters
+        returns (address[] memory)
+    {
+        return session.idxVoters;
+    }
+
+    function getAllProposals()
+        external
+        view
+        onlyVoters
+        returns (Proposal[] memory)
+    {
+        require(
+            session.status != WorkflowStatus.RegisteringVoters,
+            unicode"Please wait voters' registration to be closed"
+        );
         return session.proposals;
+    }
+
+    function getVoteOfVoter(address _voters) external view returns (uint256) {
+        return session.voters[_voters].votedProposalId;
     }
 
     /*
     RESET
     */
 
-    function resetVoters() external onlyOwner {
-             if (session.idxVoters.length > 0) {
-            for (uint256 i = 0; i < session.idxVoters.length; i++) {
-                session.voters[session.idxVoters[i]].isRegistered = false;
-            }
-        }
-    }
     function resetSession() external onlyOwner {
-        _resetVoting();
+        WorkflowStatus status = session.status;
+        session.status = WorkflowStatus.RegisteringVoters;
+
+        _resetVoters();
+
+        emit WorkflowStatusChange(status, session.status);
     }
 
-    function resetVote() external onlyOwner {
+    function resetProposals() external onlyOwner {
+        WorkflowStatus status = session.status;
+        session.status = WorkflowStatus.VotingSessionStarted;
 
+        _resetProposals();
+
+        emit WorkflowStatusChange(status, session.status);
     }
 
-    function resetProposal() public onlyOwner {
-        delete session.proposals;
-    }
+    function resetVotes() external onlyOwner {
+        WorkflowStatus status = session.status;
+        session.status = WorkflowStatus.VotingSessionStarted;
 
+        _resetVotes();
+
+        emit WorkflowStatusChange(status, session.status);
+    }
 }

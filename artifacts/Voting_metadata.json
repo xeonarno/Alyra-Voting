@@ -169,7 +169,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getVoteDetails",
+				"name": "getAllProposals",
 				"outputs": [
 					{
 						"components": [
@@ -194,12 +194,44 @@
 			},
 			{
 				"inputs": [],
+				"name": "getAllVoters",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_voters",
+						"type": "address"
+					}
+				],
+				"name": "getVoteOfVoter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getWinner",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "uint256",
 						"name": "",
-						"type": "address"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -266,7 +298,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "resetProposal",
+				"name": "resetProposals",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -280,14 +312,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "resetVote",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "resetVoters",
+				"name": "resetVotes",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -394,11 +419,11 @@
 			]
 		},
 		"Voting.sol": {
-			"keccak256": "0x1a2da50e5cdfeee0badc35c49cd0fcc5dc29071eaf67e71d24e2b52cc473c506",
+			"keccak256": "0x538eccce8c982d4c964b2de28ef386fb2c97f857992d996efc334be82b6725df",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8a0f5d4d14ec333d07d710df4446180d607b6a8fbc8e2d62fc6819109147d2e3",
-				"dweb:/ipfs/QmaoeNY6FrAm4SWb8n31mSPe9aXzLBiJTWyYZhzfKUxgdV"
+				"bzz-raw://c4234187bde966c2f08527319175a6f56500320ba9154733780db9c966fec040",
+				"dweb:/ipfs/QmQNquGjmWD6c7RWod7JVXRKMih3buBcchKdexEoFCPYHV"
 			]
 		}
 	},
